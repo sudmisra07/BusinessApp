@@ -43,8 +43,13 @@ app.get('/news', async (req, res) => {
 });
 
 // Fallback to serve index.html on root route
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+const indexPath = path.join(__dirname, 'public', 'index.html');
+app.use((req, res, next) => {
+    if (req.method === 'GET' && !req.path.startsWith('/news')) {
+        res.sendFile(indexPath);
+    } else {
+        next();
+    }
 });
 
 app.listen(PORT, () => {
